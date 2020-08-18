@@ -6,10 +6,10 @@ class Libro(object):
         # super().__init__()
         # self.__isbn = isbn
         # self.__titulo = titulo
-        # self.__id_autor = id_autor
         self.set_isbn(isbn)
         self.set_titulo(titulo)
-        self.set_id_autor(id_autor)
+        # self.set_id_autor(id_autor)
+        self.__id_autor = id_autor
 
     def get_isbn(self):
         return self.__isbn
@@ -33,13 +33,19 @@ class Libro(object):
         return self.__id_autor
 
     def set_id_autor(self, id_autor):
-        if id_autor.isdigit():
-            self.__id_autor = int(id_autor)
-        else:
-            raise Exception(f"ERROR no puede crear {type(self).__name__}")
+        self.__id_autor = int(id_autor)
+        # if id_autor.isdigit():
+        #     self.__id_autor = int(id_autor)
+        # else:
+        #     raise Exception(f"ERROR no puede crear {type(self).__name__}")
 
     def __str__(self):
         return f"título: {self.get_titulo()}, isbn: {self.get_isbn()}, autor_id: {self.get_id_autor()}"
+
+    """
+    """
+    def print__libro(self):
+        return f"título: {self.get_titulo()}, isbn: {self.get_isbn()}"
 
     """
     Comprobará que tiene un formato ISBN-10 válido y devolverá

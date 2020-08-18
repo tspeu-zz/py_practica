@@ -1,13 +1,13 @@
-import datetime
-
+from ValidatorsClass import validar_formato_fecha, validar_fecha
 
 class Autor(object):
 
-    def __init__(self, nombre, apellido, i, fecha):
+    def __init__(self, nombre, apellido, id_autor, fecha):
         self.__nombre = nombre
         self.__apellidos = apellido
-        self.__id = i
-        self.__fecha_n = fecha
+        self.__id_autor = id_autor
+        self.set_fecha_n(fecha)
+        # self.__fecha_n = fecha
 
     def get_nombre(self):
         return self.__nombre
@@ -21,38 +21,25 @@ class Autor(object):
     def set_apellidos(self, apellidos):
         self.__apellidos = apellidos
 
-    def get_id(self):
-        return self.__id
+    def get_id_autor(self):
+        return self.__id_autor
 
-    def set_id(self, i):
-        self.__id = i
+    def set_id_autor(self, i):
+        self.__id_autor = i
 
     def get_fecha_n(self):
         return self.__fecha_n
 
     def set_fecha_n(self, fecha_n):
-        self.__fecha_n = fecha_n
+        if validar_fecha(fecha_n):
+            self.__fecha_n = fecha_n
+        else:
+            self.__fecha_n = 1900
+            print("ERROR EN CLASE AUTOR")
 
-    """
-    Comprobación fecha se usará en el constructor y en el
-    setter. Comprobará que tiene una fecha válida anterior a la actual y
-    devolverá true o false
-    """
-    @staticmethod
-    def validar_formato_fecha(fecha):
-        try:
-            date_string = fecha
-            # format = "%Y"
-            datetime.datetime.strptime( date_string, "%Y")
-            print("This is the correct date string format.")
-            return True
-        except ValueError:
-            print("This is the incorrect date string format. It should be YYYY-MM-DD")
-            return False
+    def __str__(self):
+        return f"nombre: {self.get_nombre()}, apellidos: {self.get_apellidos()}, autor_id: {self.get_id_autor()}, fecha: {self.get_fecha_n()}"
 
-    @staticmethod
-    def validar_fecha(fecha):
-        x = datetime.datetime.now().year
-        print(x)
-        if Autor.validar_formato_fecha(fecha) and fecha < x:
-            print("OOOKKKK")
+    def autor_nombre(self):
+        return f"nombre: {self.get_nombre()}, apellidos: {self.get_apellidos()}"
+

@@ -32,8 +32,18 @@ __APELLIDOS_AUTOR_NAME = "introducir el/los apellido/s del AUTOR: "
 __FECHA_AUTOR_NAME = "introducir la fecha de nacimiento del AUTOR: "
 __MMS_ERROR = "No se han encontrado "
 __LIBROS__NAME = "libros"
+__LIBRO__NAME = "libro"
 __AUTORES__NAME = "autores"
-
+__AUTOR__NAME = "autor"
+__MODIFICAR_LIBROS_NAME = "Escojer un libro para modificar. Indique el índice correcto: "
+__MODIFICAR_AUTOR_NAME = "Escojer un autor para modificar. Indique el índice correcto: "
+__ESCOGER_AUTOR_NAME = "Escojer un autor. Indique el índice correcto: "
+__BORRAR_LIBROS_NAME = "Escojer un libro para eliminar. Indique el índice correcto: "
+__BORRAR_AUTOR_NAME = "Escojer un autor para eliminar. Indique el índice correcto: "
+__ID_AUTOR_DEFAULT = 1
+__NAME_AUTOR_DEFAULT = "ANÓNIMO"
+__APELLIDO_AUTOR_DEFAULT = "DESCONOCIDO"
+__FECHA_AUTOR_DEFAULT = "DESCONOCIDO"
 
 # constantes
 
@@ -46,11 +56,18 @@ def crear_libro(isbn, titulo, id_autor):
 
 """
 """
-def datos_libros():
+def datos_libros(_autores, clase):
     isbn = input_valor(__ISBN_NAME)
     titulo = input_valor(__TITULO_NAME)
-    id_autor = input_valor(__ID_AUTOR_NAME)
-    return [isbn, titulo.title(), id_autor]
+    if len(_autores) > 0:
+        mostrar_lista(_autores, clase)
+        _index = input_indice(__ESCOGER_AUTOR_NAME, len(_autores))  # TODO
+        _a = _autores[int(_index)]
+        print(_a.__str__())
+        id_autor = _a.get_id_autor()
+    else:
+        id_autor = "1"  # input_valor(__ID_AUTOR_NAME)
+    return [isbn, titulo.title(), str(id_autor)]
 
 
 """
@@ -64,7 +81,8 @@ def crear_autor(nombre, apellido, id_a, fecha):
 def datos_autor():
     nombre = input_valor(__NAME_AUTOR_NAME)
     apellido = input_valor(__APELLIDOS_AUTOR_NAME)
-    id_a = input_valor(__ID_AUTOR_NAME)
+    # id_a = input_valor(__ID_AUTOR_NAME)
+    id_a = crear_id_ramdom()
     fecha = input_valor(__FECHA_AUTOR_NAME)
     return [nombre, apellido, id_a, fecha]
 
@@ -83,6 +101,92 @@ def mostrar_lista(_lista, clase):
         print(f"{__MMS_ERROR} {clase}")
 
 
+"""
+:param list() _list lista 
+ si existe se muestra cada item
+"""
+def mostrar_libros_autores(_lista, clase, _list2):
+    _cont = 0
+    if _lista:
+        for elem in _lista:
+            print(f"[{_cont}] {elem.print__libro()}")
+            if len(_list2) > 0:
+                _a_id = elem.get_id_autor()
+                _autor = find(_list2, _a_id, "get_id_autor()")
+                # _list2[_in].__str__()
+            #     todo _in es el autor _in.getNombre()
+                print(f"{_autor.autor_nombre()}")
+            _cont += 1
+    else:
+        print(f"{__MMS_ERROR} {clase}")
+
+
+"""
+"""
+def find(arr, _id, _value):
+    for x in arr:
+        print(x)
+        # if x[f".{_value}"] == int(_id):
+        if x.get_id_autor() == int(_id):
+            return x
+# find(li , 1)
+
+"""
+:param lista() _lista si existe la lista
+:param  str modificar_name el nombre de la lista a modificar
+se llama a input_indice() si el indice es correcto
+se llama a modificar_vehiculo() pasando la clase por parametro
+:return  _diccionario{ item: index:}
+"""
+def modificar_lista(_lista, modificar_name):
+    if _lista:
+        opt = input_indice(modificar_name, len(_lista))
+        if opt:
+            _i = int(opt)
+            print(type(_lista[_i]).__name__)
+            _ele = modificar_item(type(_lista[_i]).__name__, _lista[_i].get_id_autor())
+            __dic = {"item": _ele, "index": _i}
+            return __dic
+
+
+"""
+:param string clase, acepta la clase 
+se llama a los metodos de tomar datos de cada clase
+:return  un objeto del tipo clase datos validados
+"""
+def modificar_item(clase, _id):
+    if clase == "Libro":
+        __l = datos_libros()
+        print(f"{clase} modificada!")
+        return crear_libro(__l[0], __l[1], __l[2])
+    if clase == "Autor":
+        __a = datos_autor()
+        print(f"{clase} modificada!")
+        return crear_autor(__a[0], __a[1], _id, __a[3])
+
+
+"""
+:param list() _list acepta la lista
+si la lista tiene items se llama a input_indice()
+si el indicé es correcto se borra el item de la lista en el indice
+"""
+def borrar_lista(_lista, borrar_name, clase):
+    mostrar_lista(_lista, clase)
+    if len(_lista) > 0:
+        opt = input_indice(borrar_name, len(_lista))
+        if opt:
+            _i = int(opt)
+            _lista.pop(_i)
+            print(f"{clase} eliminado correctamente!")
+
+
+"""
+"""
+def mostrar_por_index(_i, _list):
+    return _list[_i]
+"""
+menu
+"""
 def menu():
     continuar = True
     __libros = []
@@ -91,32 +195,40 @@ def menu():
         opcion = input(__MENU_NAME)
         if opcion == "1":
             print("mostrar libros!")
-            mostrar_lista(__libros, __LIBROS__NAME)
+            # mostrar_lista(__libros, __LIBROS__NAME)
+            mostrar_libros_autores(__libros, __LIBROS__NAME, __autores)
         elif opcion == "2":
             print("crear libros!!")
-            _l = datos_libros()
+            _l = datos_libros(__autores, __AUTORES__NAME)
             __libros.append(crear_libro(_l[0], _l[1], _l[2]))
         elif opcion == "3":
-
             print("modificar libros!!")
+            mostrar_lista(__libros, __LIBROS__NAME)
+            if len(__libros) > 0:
+                _dic_libros = modificar_lista(__libros, __MODIFICAR_LIBROS_NAME)
+                print(_dic_libros.get("item"))
+                __libros[_dic_libros.get("index")] = _dic_libros.get("item")
         elif opcion == "4":
-
             print("borrar libros!")
+            borrar_lista(__libros, __BORRAR_LIBROS_NAME, __LIBROS__NAME)
         elif opcion == "5":
             print("mostrar AUTOR!")
             mostrar_lista(__autores, __AUTORES__NAME)
-
         elif opcion == "6":
-            _f = input("ingrese fechas de nacimiento autor: ")
-            Autor.validar_fecha(_f)
-            pass
+            _a = datos_autor()
+            __autores.append(crear_autor(_a[0], _a[1], _a[2], _a[3]))
+
         elif opcion == "7":
             print("modificar AUTOR!")
+            mostrar_lista(__autores, __AUTORES__NAME)
+            if len(__autores) > 0:
+                _dic_aut = modificar_lista(__autores, __MODIFICAR_AUTOR_NAME)
+                print(_dic_aut.get("item"))
 
-
+                __autores[_dic_aut.get("index")] = _dic_aut.get("item")
         elif opcion == "8":
             print("eliminar AUTOR!")
-
+            borrar_lista(__autores, __BORRAR_AUTOR_NAME, __AUTOR__NAME)
             pass
         elif opcion == "9":
             print("Cargar Datos Libros")
@@ -129,8 +241,6 @@ def menu():
                 continuar = False
             else:
                 print("LA OPCIÓN NO ES VÁLIDA!")
-
-
 
 
 menu()
