@@ -1,4 +1,4 @@
-# from ValidatorsClass import *
+from ValidatorsClass import *
 
 class Libro(object):
 
@@ -15,10 +15,10 @@ class Libro(object):
         return self.__isbn
 
     def set_isbn(self, isbn):
-        if self.validar_isbn_10(isbn) or self.validar_isbn_10(isbn):
+        if is_valid_isbn10(isbn) or is_valid_isbn13(isbn):
             self.__isbn = isbn
         else:
-            raise Exception(f"ERROR no puede crear {type(self).__name__}")
+            raise Exception(f"ERROR- el ISBN no es correcto! No se puede crear {type(self).__name__}")
 
     def get_titulo(self):
         return self.__titulo
@@ -47,20 +47,20 @@ class Libro(object):
     def print__libro(self):
         return f"título: {self.get_titulo()}, isbn: {self.get_isbn()}"
 
-    """
-    Comprobará que tiene un formato ISBN-10 válido y devolverá
-    true o false en los casos correspondientes.
-    """
-    @staticmethod
-    def validar_isbn_10(isbn):
-        if isbn:
-            return True
-
-    """
-    .Comprobará que tiene un formato ISBN-13 válido y devolverá
-    true o false en los casos correspondientes
-    """
-    @staticmethod
-    def validar_isbn_13(isbn):
-        if isbn:
-            return True
+    # """
+    # Comprobará que tiene un formato ISBN-10 válido y devolverá
+    # true o false en los casos correspondientes.
+    # """
+    # @staticmethod
+    # def validar_isbn_10(isbn):
+    #     if isbn:
+    #         return True
+    #
+    # """
+    # .Comprobará que tiene un formato ISBN-13 válido y devolverá
+    # true o false en los casos correspondientes
+    # """
+    # @staticmethod
+    # def validar_isbn_13(isbn):
+    #     if isbn:
+    #         return True

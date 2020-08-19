@@ -4,6 +4,7 @@ from random import randint
 import datetime
 import re
 import os.path
+import isbnlib
 
 
 """
@@ -57,6 +58,18 @@ def input_indice(msm, _len):
             else:
                 print("ERROR - EL ÍNDICE NO ES CORRECTO")
 
+
+"""
+:param string msm: acepta un mensaje para poner al input()
+:return string. devuelve el valor de entrada si es un número correcto
+"""
+def input_isbn(msm):
+    _cont = True
+    while _cont:
+        _str = input(msm)
+        if is_valid_isbn10(_str) or is_valid_isbn13(_str):
+            _cont = False
+            return _str
 
 # todo fecha
 """
@@ -130,73 +143,64 @@ def validated_year(year):
 def check(isbn):
     check_digit = int(isbn[-1])
     match = re.search(r'(\d)-(\d{3})-(\d{5})', isbn[:-1])
-
     if not match:
         return False
-
     digits = match.group(1) + match.group(2) + match.group(3)
     result = 0
-
     for i, digit in enumerate(digits):
         result += (i + 1) * int(digit)
-
     return True if (result % 11) == check_digit else False
 
 
 # isbna 10
 def is_valid_isbn10(isbn):
-    # check for length
-    if len(isbn ) != 10:
-        return False
-
-    # Computing weighted sum
-    # of first 9 digits
-    _sum = 0
-    for i in range(9):
-        if 0 <= int(isbn[i]) <= 9:
-            _sum += int(isbn[i]) * (10 - i)
-        else:
-            return False
-
-    # Checking last digit
-    if (isbn[9] != 'X' and
-            0 <= int(isbn[9]) <= 9):
-        return False
-
-    # If last digit is 'X', add
-    # 10 to sum, else add its value.
-    _sum += 10 if isbn[9] == 'X' else int(isbn[9])
-
-    # Return true if weighted sum of
-    # digits is divisible by 11
-    return _sum % 11 == 0
-
-# isbna 13
-# def is_valid_isbn13(isbn):
-def is_valid_isbn13(code):
-
     result = False
-
-    # isbn13 string have 13 chars. All of them should be numbers.
-    if re.match('^\d{13}$', code):
+    # isbn10 string have 10 chars.
+    # First 9 chars should be numbers and the 10th char can be a number or an 'X'
+    if re.match('^\d{9}[\d,X]{1}$', isbn):
         sum = 0
-
-        # result = (isbn[0] * 1 + isbn[1] * 3 + ... + isbn[12] * 1) mod 10 == 0
-        for i in range(len(code)):
-            digit = int(code[i])
-            sum += digit * (3 if is_odd(i) else 1)
-
-        result = sum % 10 == 0
-
+        # result = (isbn[0] * 1 + isbn[1] * 2 + ... + isbn[9] * 10) mod 11 == 0
+        for i in range( 0, 9):
+            sum += int(isbn[i]) * (i + 1)
+        sum += 10 if isbn[9] == 'X' else int(isbn[9]) * 10
+        result = sum % 11 == 0
     return result
 
-#
+
+# isbn 13
+def is_valid_isbn13(isbn):
+    result = False
+    # isbn13 string have 13 chars. All of them should be numbers.
+    if re.match("^\d{13}$", isbn):
+        sum = 0
+        # result = (isbn[0] * 1 + isbn[1] * 3 + ... + isbn[12] * 1) mod 10 == 0
+        for i in range(len(isbn)):
+            digit = int(isbn[i])
+            sum += digit * (3 if is_odd(i) else 1)
+        result = sum % 10 == 0
+    return result
+
+# es impar
 def is_odd(n):
     return n % 2 != 0
 
-# This code is contributed
-# by "Abhishek Sharma 44"
 
 # validar si existe el fichero return True si existe
 def validated_file_exist(_file_name):
     return os.path.isfile(_file_name)
+
+# isbn = "007462542X"
+# isbn13 = "9783161484100"
+# if is_valid_isbn10(isbn):
+#     print('Valid')
+# else:
+#     print("Invalid")
+#
+# if is_valid_isbn13(isbn13):
+#     print('Valid 13')
+# else:
+#     print("Invalid 13")
+#
+# print(isbnlib.is_isbn13('978-3-16-148410-0'))
+# print(isbnlib.is_isbn13('9783161484100'))
+# print(isbnlib.is_isbn13('2222222222222'))
