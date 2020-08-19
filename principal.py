@@ -2,6 +2,7 @@
 from AutorClass import *
 from LibroClass import *
 from ValidatorsClass import *
+import pickle
 
 # todo
 """
@@ -187,6 +188,30 @@ def mostrar_por_index(_i, _list):
     return _list[_i]
 
 
+"""
+"""
+def grabar_datos(_list, name_fichero):
+    #  todo validar
+    _n = f"{name_fichero}.pckl"
+    __f = open(_n, "wb")
+    pickle.dump(_list, __f)
+    __f.close()
+
+
+"""
+"""
+def cargar_datos(_name):
+    _n = f"{_name}.pckl"
+    _f = open(_n, "rb")
+    _lista = pickle.load(_f)
+    for _l in _lista:
+        print(_l.__str__())
+    _f.close()
+    return _lista
+
+
+"""
+"""
 def menu_datos():
     _cont = True
     while _cont:
@@ -196,9 +221,6 @@ def menu_datos():
             return False
         else:
             print("carga datos")
-
-
-
 
 
 """
@@ -241,17 +263,21 @@ def menu():
             if len(__autores) > 0:
                 _dic_aut = modificar_lista(__autores, __MODIFICAR_AUTOR_NAME)
                 print(_dic_aut.get("item"))
-
                 __autores[_dic_aut.get("index")] = _dic_aut.get("item")
         elif opcion == "8":
             print("eliminar AUTOR!")
             borrar_lista(__autores, __BORRAR_AUTOR_NAME, __AUTOR__NAME)
             pass
-        elif opcion == "9":
-            print("Cargar Datos Libros")
-
         elif opcion == "10":
+            print("Cargar Datos Libros")
+            __libros = cargar_datos(__LIBROS__NAME)
+            __autores = cargar_datos(__AUTORES__NAME)
+
+        elif opcion == "9":
             print("GUARDAR Datos Libros")
+            grabar_datos(__libros, __LIBROS__NAME)
+            grabar_datos(__autores, __AUTORES__NAME)
+            continuar = False
         else:
             if opcion == "X" or opcion == "x":
                 print("Salimos de programa!")
