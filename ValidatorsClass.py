@@ -59,12 +59,29 @@ def input_indice(msm, _len):
 
 # todo fecha
 """
+:param string msm: acepta un mensaje para poner al input()
+:return string devuelve el valor de entrada si es correcto 
+"""
+def input_fecha(msm):
+    _cont = True
+    while _cont:
+        _str = input(msm)
+        if _str:
+            _cont = False
+            return _str.strip()
+
+
+
+
+"""
 Comprobación fecha se usará en el constructor y en el
 setter. Comprobará que tiene una fecha válida anterior a la actual y
 devolverá true o false
+https://docs.python.org/es/3/library/datetime.html#strftime-strptime-behavior
 """
 def validar_formato_fecha(fecha):
     try:
+        validated_year(fecha)
         datetime.datetime.strptime(fecha, "%Y")
         print("El formato del año es correcto")
         return True
@@ -81,8 +98,32 @@ def validar_fecha(fecha):
     print(f"año actual: {x}")
     if validar_formato_fecha(fecha):
         if int(fecha) < x:
-            print(f"fecha naciomiento ok")
+            print(f"fecha nacimiento ok")
             return True
+
+
+"""
+"""
+def validated_year(year):
+    if len(year) < 4:
+        _pos = 4 - len(year)  # 1 - 2 -3
+        cont = 0
+        _ok = ""
+        _fecha = "0001"
+        print(_pos)
+        for i in range(0, _pos):
+            # _fecha = "#" + _fecha + "%"
+            _ok += _fecha[i]
+            cont += 1
+        # print(_fecha)
+        print(_ok)
+        # while cont < _pos:
+        #     _ok += "0"
+        #     cont += 1
+
+        # for _l in year:
+        #     print(f"menos {_l}")
+
 
 # todo isbn
 def check(isbn):

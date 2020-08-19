@@ -21,9 +21,10 @@ en el programa.
 
 # contantes
 _MSM = "Escojer una opción:\n"
+__MENU__DATA = f"[1]:Cargar Datos desede fichero externo. {_MSM} [S] [N]\n"
 __MENU_NAME = f"{_MSM}[1]:Mostrar Libros\n[2]:Crear Libro\n[3]:Modificar Libro\n[4]:Eliminar Libro\n" \
               f"[5]:Mostrar Autores\n[6]:Crear Autor\n[7]:Modificar Autor\n[8]:Eliminar Autor\n" \
-              f"[9]:Cargar Datos Libros\n[10]:Grabar Datos Libros\n[x] SALIR\n"
+              f"[9]:Grabar Datos Libros\n[x] SALIR\n"
 __ISBN_NAME = "introducir el ISBN: "
 __TITULO_NAME = "introducir el TITULO: "
 __ID_AUTOR_NAME = "introducir el ID_AUTOR: "
@@ -84,7 +85,7 @@ def datos_autor():
     # id_a = input_valor(__ID_AUTOR_NAME)
     id_a = crear_id_ramdom()
     fecha = input_valor(__FECHA_AUTOR_NAME)
-    return [nombre, apellido, id_a, fecha]
+    return [nombre.title(), apellido.title(), id_a, fecha]
 
 
 """
@@ -184,6 +185,22 @@ def borrar_lista(_lista, borrar_name, clase):
 """
 def mostrar_por_index(_i, _list):
     return _list[_i]
+
+
+def menu_datos():
+    _cont = True
+    while _cont:
+        _opt = input(__MENU__DATA)
+        if _opt != "S" or _opt != "s":
+            print("menu normal")
+            return False
+        else:
+            print("carga datos")
+
+
+
+
+
 """
 menu
 """
@@ -244,3 +261,5 @@ def menu():
 
 
 menu()
+
+# validated_year("100")
