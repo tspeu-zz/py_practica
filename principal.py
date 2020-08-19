@@ -3,6 +3,7 @@ from AutorClass import *
 from LibroClass import *
 from ValidatorsClass import *
 import pickle
+import isbnlib
 
 # todo
 """
@@ -22,10 +23,10 @@ en el programa.
 
 # contantes
 _MSM = "Escojer una opción:\n"
-__MENU__DATA = f"[1]:Cargar Datos desede fichero externo. {_MSM} [S] [N]\n"
+__MENU__DATA = f"Desea cargar datos desde un fichero externo.\n{_MSM}[S] [N] :\n"
 __MENU_NAME = f"{_MSM}[1]:Mostrar Libros\n[2]:Crear Libro\n[3]:Modificar Libro\n[4]:Eliminar Libro\n" \
               f"[5]:Mostrar Autores\n[6]:Crear Autor\n[7]:Modificar Autor\n[8]:Eliminar Autor\n" \
-              f"[9]:Grabar Datos Libros\n[x] SALIR\n"
+              f"[9]:Grabar Datos Libros y Salir\n[x] SALIR\n"
 __ISBN_NAME = "introducir el ISBN: "
 __TITULO_NAME = "introducir el TITULO: "
 __ID_AUTOR_NAME = "introducir el ID_AUTOR: "
@@ -74,6 +75,21 @@ def datos_libros(_autores, clase):
 
 """
 """
+def datos_libros_modificar(_id):
+    isbn = input_valor(__ISBN_NAME)
+    titulo = input_valor(__TITULO_NAME)
+    # if len(_autores) > 0:
+    #     mostrar_lista(_autores, clase)
+    #     _index = input_indice(__ESCOGER_AUTOR_NAME, len(_autores))  # TODO
+    #     _a = _autores[int(_index)]
+    #     print(_a.__str__())
+    #     id_autor = _a.get_id_autor()
+    # else:
+    #     id_autor = "1"  # input_valor(__ID_AUTOR_NAME)
+    return [isbn, titulo.title(), str(_id)]
+
+"""
+"""
 def crear_autor(nombre, apellido, id_a, fecha):
     return Autor(nombre, apellido, id_a, fecha)
 
@@ -111,7 +127,7 @@ def mostrar_libros_autores(_lista, clase, _list2):
     _cont = 0
     if _lista:
         for elem in _lista:
-            print(f"[{_cont}] {elem.print__libro()}")
+            print(f"[{_cont}] {elem.__str__()}")
             if len(_list2) > 0:
                 _a_id = elem.get_id_autor()
                 _autor = find(_list2, _a_id, "get_id_autor()")
@@ -158,8 +174,9 @@ se llama a los metodos de tomar datos de cada clase
 """
 def modificar_item(clase, _id):
     if clase == "Libro":
-        __l = datos_libros()
+        __l = datos_libros_modificar(_id)
         print(f"{clase} modificada!")
+        print("el id del autor no puede modificarse")
         return crear_libro(__l[0], __l[1], __l[2])
     if clase == "Autor":
         __a = datos_autor()
@@ -202,34 +219,48 @@ def grabar_datos(_list, name_fichero):
 """
 def cargar_datos(_name):
     _n = f"{_name}.pckl"
-    _f = open(_n, "rb")
-    _lista = pickle.load(_f)
-    for _l in _lista:
-        print(_l.__str__())
-    _f.close()
-    return _lista
+    if validated_file_exist(_n):
+        _f = open(_n, "rb")
+        _lista = pickle.load(_f)
+        print(f"Datos cargados correctamente. fichero: {_n}")
+        for _l in _lista:
+            print(_l.__str__())
+        _f.close()
+        return _lista
+    else:
+        print(f"El fichero {_n} no existe!")
+        return False
 
 
 """
 """
-def menu_datos():
-    _cont = True
-    while _cont:
-        _opt = input(__MENU__DATA)
-        if _opt != "S" or _opt != "s":
-            print("menu normal")
-            return False
-        else:
-            print("carga datos")
+def menu_datos(_lista1, _lista2):
+    print(".......cargand datos")
+    _lista1 = cargar_datos(__LIBROS__NAME)
+    _lista2 = cargar_datos(__AUTORES__NAME)
+    return [_lista1, _lista2]
 
 
 """
 menu
 """
 def menu():
-    continuar = True
     __libros = []
     __autores = []
+    if validated_file_exist(f"{__LIBROS__NAME}.pckl"):
+        _cont = True
+        while _cont:
+            _opt = input(__MENU__DATA)
+            if _opt == "S" or _opt == "s":
+                __l = menu_datos(__libros, __autores)
+                __libros = __l[0]
+                __autores = __l[1]
+                _cont = False
+            else:
+                print("No se han cargado los datos externos")
+                print("menu normal")
+                _cont = False
+    continuar = True
     while continuar:
         opcion = input(__MENU_NAME)
         if opcion == "1":
@@ -256,7 +287,6 @@ def menu():
         elif opcion == "6":
             _a = datos_autor()
             __autores.append(crear_autor(_a[0], _a[1], _a[2], _a[3]))
-
         elif opcion == "7":
             print("modificar AUTOR!")
             mostrar_lista(__autores, __AUTORES__NAME)
@@ -268,24 +298,49 @@ def menu():
             print("eliminar AUTOR!")
             borrar_lista(__autores, __BORRAR_AUTOR_NAME, __AUTOR__NAME)
             pass
-        elif opcion == "10":
-            print("Cargar Datos Libros")
-            __libros = cargar_datos(__LIBROS__NAME)
-            __autores = cargar_datos(__AUTORES__NAME)
-
+        # elif opcion == "10":
         elif opcion == "9":
-            print("GUARDAR Datos Libros")
-            grabar_datos(__libros, __LIBROS__NAME)
-            grabar_datos(__autores, __AUTORES__NAME)
+            if __libros or __autores:
+                print("....guradnado datos en ficheros externos")
+                grabar_datos(__libros, __LIBROS__NAME)
+                grabar_datos(__autores, __AUTORES__NAME)
+                print("Saliendo del programa!")
+            else:
+                print("No hay datos que grabar en los ficheros externos!")
             continuar = False
         else:
             if opcion == "X" or opcion == "x":
-                print("Salimos de programa!")
+                print("Saliendo del programa!")
                 continuar = False
             else:
                 print("LA OPCIÓN NO ES VÁLIDA!")
 
 
-menu()
+# menu()
 
 # validated_year("100")
+
+# Driver Code
+isbns = [
+    "0811821846",
+    "978-0811821841",
+    "1616550414",
+    "978-1616550417",
+    "0553418025",
+    "978-0553418026",
+]
+isbn = "007462542X"
+isbn13 = "9783161484100"
+if is_valid_isbn10(isbn):
+    print('Valid')
+else:
+    print("Invalid")
+
+if is_valid_isbn13(isbn13):
+    print('Valid 13')
+else:
+    print("Invalid 13")
+
+print(isbnlib.is_isbn13('978-3-16-148410-0'))
+print(isbnlib.is_isbn13('9783161484100'))
+print(isbnlib.is_isbn13('2222222222222'))
