@@ -65,8 +65,9 @@ def datos_libros(_autores, clase):
         mostrar_lista(_autores, clase)
         _index = input_indice(__ESCOGER_AUTOR_NAME, len(_autores))  # TODO
         _a = _autores[int(_index)]
-        print(_a.__str__())
         id_autor = _a.get_id_autor()
+        # print(_a.__str__())
+        # print(_a.__str__())
     else:
         id_autor = "1"  # input_valor(__ID_AUTOR_NAME)
     return [isbn, titulo.title(), str(id_autor)]
@@ -116,15 +117,17 @@ def mostrar_lista(_lista, clase):
 """
 def mostrar_libros_autores(_lista, clase, _list2):
     _cont = 0
+    _msm = ""
     if _lista:
         for elem in _lista:
-            print(f"[{_cont}] {elem.__str__()}")
             if len(_list2) > 0:
                 _a_id = elem.get_id_autor()
                 _autor = find(_list2, _a_id, "get_id_autor()")
                 # _list2[_in].__str__()
             #     todo _in es el autor _in.getNombre()
-                print(f"{_autor.autor_nombre()}")
+            #     print(f"{_autor.autor_nombre()}")
+                _msm = _autor.autor_nombre()
+            print(f"[{_cont}] {elem.__str__()}, autor:{_msm}")
             _cont += 1
     else:
         print(f"{__MMS_ERROR} {clase}")
@@ -134,8 +137,6 @@ def mostrar_libros_autores(_lista, clase, _list2):
 """
 def find(arr, _id, _value):
     for x in arr:
-        print(x)
-        # if x[f".{_value}"] == int(_id):
         if x.get_id_autor() == int(_id):
             return x
 # find(li , 1)
@@ -177,7 +178,7 @@ def modificar_item(clase, _id):
 
 """
 :param list() _list acepta la lista
-si la lista tiene items se llama a input_indice()
+si la lista tiene items se llama a input_indice() con el mensaje del input y la longitud de la lista
 si el indicé es correcto se borra el item de la lista en el indice
 """
 def borrar_lista(_lista, borrar_name, clase):
@@ -187,16 +188,21 @@ def borrar_lista(_lista, borrar_name, clase):
         if opt:
             _i = int(opt)
             _lista.pop(_i)
-            print(f"{clase} eliminado correctamente!")
+            print(f"{clase} se ha eliminado correctamente!")
 
 
 """
+:param _i int. indice que se quiere mostrar
+:param _list list[], lista con los datos
+:return elemto de la lista en la posución _i
 """
 def mostrar_por_index(_i, _list):
     return _list[_i]
 
 
 """
+:param _list list[], lista con los datos
+:param name_fichero string, nombre del fichero que va a guardar
 """
 def grabar_datos(_list, name_fichero):
     #  todo validar
@@ -207,6 +213,9 @@ def grabar_datos(_list, name_fichero):
 
 
 """
+:param = name string . es el nombre del fichero que se va a cargar
+:return _list list[]. con los datos del fichero
+
 """
 def cargar_datos(_name):
     _n = f"{_name}.pckl"
@@ -224,16 +233,19 @@ def cargar_datos(_name):
 
 
 """
+muesta el menu para cargar datos externos
+:return lista1 con datos de fichero libros
+:return lista2 con datos de fichero autores
 """
 def menu_datos(_lista1, _lista2):
-    print(".......cargand datos")
+    print(".......cargando datos")
     _lista1 = cargar_datos(__LIBROS__NAME)
     _lista2 = cargar_datos(__AUTORES__NAME)
     return [_lista1, _lista2]
 
 
 """
-menu
+menu principal del programa
 """
 def menu():
     __libros = []
@@ -248,8 +260,7 @@ def menu():
                 __autores = __l[1]
                 _cont = False
             else:
-                print("No se han cargado los datos externos")
-                print("menu normal")
+                print("No se han cargado los datos desde ficheros externos")
                 _cont = False
     continuar = True
     while continuar:
@@ -289,10 +300,9 @@ def menu():
             print("eliminar AUTOR!")
             borrar_lista(__autores, __BORRAR_AUTOR_NAME, __AUTOR__NAME)
             pass
-        # elif opcion == "10":
         elif opcion == "9":
             if __libros or __autores:
-                print("....guradnado datos en ficheros externos")
+                print("....guadando datos en ficheros externos")
                 grabar_datos(__libros, __LIBROS__NAME)
                 grabar_datos(__autores, __AUTORES__NAME)
                 print("Saliendo del programa!")
@@ -330,3 +340,11 @@ def menu():
 # print(is_odd(12))
 # print('is_odd(12)')
 # print(is_odd(10))
+
+validated_year("123")
+validated_year("12")
+validated_year("1")
+validated_year("1235")
+
+
+

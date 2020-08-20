@@ -111,29 +111,40 @@ def validar_formato_fecha(fecha):
 
 """
 def validar_fecha(fecha):
-    x = datetime.datetime.now().year
-    print(f"año actual: {x}")
+    _y = datetime.datetime.now().year
     if validar_formato_fecha(fecha):
-        if int(fecha) < x:
-            print(f"fecha nacimiento ok")
+        if int(fecha) < _y:
             return True
+    else:
+        print(f"fecha nacimiento es mayor que año actual{_y}")
+        return False
+
 
 
 """
 """
 def validated_year(year):
+    print(f"-----------------")
     if len(year) < 4:
+        print(year)
         _pos = 4 - len(year)  # 1 - 2 -3
         cont = 0
         _ok = ""
         _fecha = "0001"
-        print(_pos)
+        _new = "0000"
+        _old = year
+        print(f"_pos {_pos}")
         for i in range(0, _pos):
             # _fecha = "#" + _fecha + "%"
+            print(i)
             _ok += _fecha[i]
+            _new = "0"
             cont += 1
         # print(_fecha)
-        print(_ok)
+        print(f"OK: {_ok}")
+        _ok += year
+        print(f"OK: {_ok}")
+        print(f"-----------------")
         # while cont < _pos:
         #     _ok += "0"
         #     cont += 1
@@ -163,11 +174,12 @@ def is_valid_isbn(code):
         13: is_valid_isbn13
     }.get(len(code), lambda n: False)(code)
 
+
 # isbn 10
 def is_valid_isbn10(isbn):
     result = False
-    # isbn10 string have 10 chars.
-    # First 9 chars should be numbers and the 10th char can be a number or an 'X'
+    # isbn string have tiene 10 caracteres.
+    # Los primeros 9 caracteres deben ser números y el décimo carácter puede ser un número o una 'X'
     if re.match('^\d{9}[\d,X]{1}$', isbn):
         _sum = 0
         # result = (isbn[0] * 1 + isbn[1] * 2 + ... + isbn[9] * 10) mod 11 == 0
@@ -179,11 +191,9 @@ def is_valid_isbn10(isbn):
 
 
 # isbn 13
-# 978 or 979
-
 def is_valid_isbn13(isbn):
     result = False
-    # isbn13 string have 13 chars. All of them should be numbers.
+    # isbn string tiene 13 caracteres. todos deben ser números.
     if re.match("^\d{13}$", isbn):
         _sum = 0
         # result = (isbn[0] * 1 + isbn[1] * 3 + ... + isbn[12] * 1) mod 10 == 0
@@ -193,7 +203,7 @@ def is_valid_isbn13(isbn):
         result = _sum % 10 == 0
     return result
 
-# es impar
+# verificar si el numero es impar
 def is_odd(n):
     return n % 2 != 0
 
@@ -204,6 +214,7 @@ def validated_file_exist(_file_name):
 
 
 """
+# informa si el isbn 13  no comienza por 978 o 979
 """
 def info_isbn_13(_str):
     if not _str.startswith("978", 0, 2) or _str.startswith("979", 0, 2):
