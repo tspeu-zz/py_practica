@@ -1,4 +1,5 @@
-from ValidatorsClass import validar_formato_fecha, validar_fecha
+from ValidatorsClass import validar_fecha, validar_longitud
+
 
 class Autor(object):
 
@@ -31,14 +32,16 @@ class Autor(object):
         return self.__fecha_n
 
     def set_fecha_n(self, fecha_n):
+        if len(fecha_n) < 4:
+            fecha_n = validar_longitud(fecha_n)
         if validar_fecha(fecha_n):
             self.__fecha_n = fecha_n
         else:
             self.__fecha_n = 1900
-            print("ERROR EN CLASE AUTOR")
+            print(f"ERROR en el año de nacimiento el año por defecto será: {self.get_fecha_n()}")
 
     def __str__(self):
-        return f"nombre: {self.get_nombre()}, apellidos: {self.get_apellidos()}, autor_id: {self.get_id_autor()}, fecha: {self.get_fecha_n()}"
+        return f"nombre: {self.get_nombre()}, apellidos: {self.get_apellidos()}, autor_id: {self.get_id_autor()}, año de nacimiento: {self.get_fecha_n()}"
 
     def autor_nombre(self):
         return f"nombre: {self.get_nombre()}, apellidos: {self.get_apellidos()}"
