@@ -15,7 +15,7 @@ class Libro(object):
         return self.__isbn
 
     def set_isbn(self, isbn):
-        if is_valid_isbn10(isbn) or is_valid_isbn13(isbn):
+        if is_valid_isbn(isbn):
             self.__isbn = isbn
         else:
             raise Exception(f"ERROR- el ISBN no es correcto! No se puede crear {type(self).__name__}")

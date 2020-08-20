@@ -4,7 +4,7 @@ from random import randint
 import datetime
 import re
 import os.path
-import isbnlib
+# import isbnlib
 
 
 """
@@ -12,7 +12,6 @@ import isbnlib
 """
 def crear_id_ramdom():
     # _id = uuid.uuid4().hex[:8]
-    # print("Printing random integer ", randrange(0, 20, 2))
     return randint(3, 9999)
 
 
@@ -67,9 +66,14 @@ def input_isbn(msm):
     _cont = True
     while _cont:
         _str = input(msm)
-        if is_valid_isbn10(_str) or is_valid_isbn13(_str):
-            _cont = False
-            return _str
+        if _str:
+            if is_valid_isbn(_str):
+                if len(_str) == 13:
+                    info_isbn_13(_str)
+                _cont = False
+                return _str
+        print("El ISBN no es válido! Iténtelo de nuevo.")
+
 
 # todo fecha
 """
@@ -81,10 +85,9 @@ def input_fecha(msm):
     while _cont:
         _str = input(msm)
         if _str:
-            _cont = False
-            return _str.strip()
-
-
+            if _str.isdigit():
+                _cont = False
+                return _str.strip()
 
 
 """
@@ -152,32 +155,42 @@ def check(isbn):
     return True if (result % 11) == check_digit else False
 
 
-# isbna 10
+# validar ISBN
+def is_valid_isbn(code):
+    code = code.replace('-', '').replace(' ', '')
+    return {
+        10: is_valid_isbn10,
+        13: is_valid_isbn13
+    }.get(len(code), lambda n: False)(code)
+
+# isbn 10
 def is_valid_isbn10(isbn):
     result = False
     # isbn10 string have 10 chars.
     # First 9 chars should be numbers and the 10th char can be a number or an 'X'
     if re.match('^\d{9}[\d,X]{1}$', isbn):
-        sum = 0
+        _sum = 0
         # result = (isbn[0] * 1 + isbn[1] * 2 + ... + isbn[9] * 10) mod 11 == 0
-        for i in range( 0, 9):
-            sum += int(isbn[i]) * (i + 1)
-        sum += 10 if isbn[9] == 'X' else int(isbn[9]) * 10
-        result = sum % 11 == 0
+        for i in range(0, 9):
+            _sum += int(isbn[i]) * (i + 1)
+        _sum += 10 if isbn[9] == 'X' else int(isbn[9]) * 10
+        result = _sum % 11 == 0
     return result
 
 
 # isbn 13
+# 978 or 979
+
 def is_valid_isbn13(isbn):
     result = False
     # isbn13 string have 13 chars. All of them should be numbers.
     if re.match("^\d{13}$", isbn):
-        sum = 0
+        _sum = 0
         # result = (isbn[0] * 1 + isbn[1] * 3 + ... + isbn[12] * 1) mod 10 == 0
         for i in range(len(isbn)):
             digit = int(isbn[i])
-            sum += digit * (3 if is_odd(i) else 1)
-        result = sum % 10 == 0
+            _sum += digit * (3 if is_odd(i) else 1)
+        result = _sum % 10 == 0
     return result
 
 # es impar
@@ -189,17 +202,19 @@ def is_odd(n):
 def validated_file_exist(_file_name):
     return os.path.isfile(_file_name)
 
+
+"""
+"""
+def info_isbn_13(_str):
+    if not _str.startswith("978", 0, 2) or _str.startswith("979", 0, 2):
+        print("El ISBN no comienza con uno de los prefijos 978 o 979 que están reservados para ISBN;\n "
+              "aunque el número está validado, no un ISBN correcto")
+
+
+# test
 # isbn = "007462542X"
 # isbn13 = "9783161484100"
-# if is_valid_isbn10(isbn):
-#     print('Valid')
-# else:
-#     print("Invalid")
 #
-# if is_valid_isbn13(isbn13):
-#     print('Valid 13')
-# else:
-#     print("Invalid 13")
 #
 # print(isbnlib.is_isbn13('978-3-16-148410-0'))
 # print(isbnlib.is_isbn13('9783161484100'))

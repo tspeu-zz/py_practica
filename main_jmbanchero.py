@@ -22,7 +22,7 @@ en el programa.
 
 # contantes
 _MSM = "Escojer una opción:\n"
-__MENU__DATA = f"Desea cargar datos desde un fichero externo.\n{_MSM}[S] [N] :\n"
+__MENU__DATA = f"Desea cargar datos desde un fichero externo.\n{_MSM}[S]\notra tecla para no cargar los datos\n"
 __MENU_NAME = f"{_MSM}[1]:Mostrar Libros\n[2]:Crear Libro\n[3]:Modificar Libro\n[4]:Eliminar Libro\n" \
               f"[5]:Mostrar Autores\n[6]:Crear Autor\n[7]:Modificar Autor\n[8]:Eliminar Autor\n" \
               f"[9]:Grabar Datos Libros y Salir\n[x] SALIR\n"
@@ -59,7 +59,7 @@ def crear_libro(isbn, titulo, id_autor):
 """
 """
 def datos_libros(_autores, clase):
-    isbn = input_valor(__ISBN_NAME)
+    isbn = input_isbn(__ISBN_NAME)
     titulo = input_valor(__TITULO_NAME)
     if len(_autores) > 0:
         mostrar_lista(_autores, clase)
